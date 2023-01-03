@@ -18,3 +18,12 @@ from pairs of consecutive frames. The difference between the two feature maps pr
 by the network is classified using an SVM.
 
 ![Architecture diagram](https://github.com/dragos-gaspar/TemporalSegmentation/blob/master/images/architecture.png?raw=true)
+
+## Dataset
+
+The dataset used for training and testing is the OpenVideoSceneDetectionDataset
+https://research.ibm.com/haifa/projects/imt/video/Video_DataSetTable.shtml
+
+The annotations were adjusted to match the exact frame timings of the transitions.
+On the modified version of the dataset, the model obtains between 83% and 91% accuracy,
+depending on the train-test split.
