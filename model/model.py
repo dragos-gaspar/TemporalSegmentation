@@ -107,9 +107,20 @@ def predict():
 
     total_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
     distances = []
+
+    res, frame = video_capture.read()
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    second = frame_rgb
+
     for i in range(total_frames - 1):
         logger.info(f'Extracting features from frame pair ({i}, {i+1})')
-        pair = get_frame_pair(video_capture, i, i+1)
+
+        first = second
+        res, frame = video_capture.read()
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        second = frame_rgb
+
+        pair = np.stack((first, second))
         transposed = np.transpose(pair, (0, 3, 1, 2))
         data = torch.tensor(transposed)
         t1 = preprocess(data[0])
