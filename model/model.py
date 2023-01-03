@@ -130,7 +130,9 @@ def predict():
         distances.append(out.item())
 
     pred = clf.predict(np.array(distances).reshape(-1, 1))
-    print('Transitions:')
-    for i, p in enumerate(pred):
-        if p == 1:
-            print(i, i+1)
+    with open(Config.PREDICTIONS_PATH, 'w') as f:
+        for i, p in enumerate(pred):
+            if p == 1:
+                f.write(f'{i} {i+1}\n')
+
+    logger.info('Done')

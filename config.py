@@ -8,3 +8,4 @@ class ModelConfig:
     DATA_PATH = '../dataset/'
     SVM_PATH = '../svm.p'
     INFERENCE_DATA_PATH = '../demo.mp4'
+    PREDICTIONS_PATH = '../predictions.txt'
