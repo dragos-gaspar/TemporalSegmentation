@@ -1,9 +1,11 @@
 import logging
 import os
 import ssl
+import pickle
 
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 import torch
 from torchvision.models import resnet18
 from torchvision import transforms
@@ -13,6 +15,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from config import ModelConfig as Config
+from data.data import get_frame_pair
 from model.SiameseNet import SiameseNet
 from model.resnet import resnet18
 
@@ -92,7 +95,31 @@ def train():
 
     pred = clf.predict(X_test)
     logger.info(f'Validation accuracy is {accuracy_score(y_test, pred)}')
+    logger.info(f'Pickling trained SVM...')
+    pickle.dump(clf, open(Config.SVM_PATH, "wb"))
+    logger.info('Done')
 
 
 def predict():
-    ...
+    video_capture = cv2.VideoCapture(Config.INFERENCE_DATA_PATH)
+    model = get_feature_extractor()
+    clf = pickle.load(open(Config.SVM_PATH, "rb"))
+
+    total_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+    distances = []
+    for i in range(total_frames - 1):
+        logger.info(f'Extracting features from frame pair ({i}, {i+1})')
+        pair = get_frame_pair(video_capture, i, i+1)
+        transposed = np.transpose(pair, (0, 3, 1, 2))
+        data = torch.tensor(transposed)
+        t1 = preprocess(data[0])
+        t2 = preprocess(data[1])
+
+        out = model(t1.unsqueeze(0), t2.unsqueeze(0))
+        distances.append(out.item())
+
+    pred = clf.predict(np.array(distances).reshape(-1, 1))
+    print('Transitions:')
+    for i, p in enumerate(pred):
+        if p == 1:
+            print(i, i+1)

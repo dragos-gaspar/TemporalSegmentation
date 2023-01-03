@@ -6,5 +6,5 @@ class DataConfig:
 
 class ModelConfig:
     DATA_PATH = '../dataset/'
-    SVM_PATH = '../svm.pickle'
+    SVM_PATH = '../svm.p'
     INFERENCE_DATA_PATH = '../demo.mp4'
