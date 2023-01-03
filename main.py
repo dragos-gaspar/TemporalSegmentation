@@ -2,7 +2,7 @@ import argparse
 
 
 from data.data import process_raw_dataset
-from model.model import train
+from model.model import train, predict
 
 
 if __name__ == '__main__':
@@ -18,4 +18,4 @@ if __name__ == '__main__':
         train()
 
     elif args.function == 'predict':
-        ...
+        predict()

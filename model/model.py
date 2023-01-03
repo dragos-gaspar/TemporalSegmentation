@@ -1,3 +1,4 @@
+import logging
 import os
 import ssl
 
@@ -14,6 +15,12 @@ from sklearn.model_selection import train_test_split
 from config import ModelConfig as Config
 from model.SiameseNet import SiameseNet
 from model.resnet import resnet18
+
+
+logger = logging.getLogger('model')
+handler = logging.StreamHandler()
+logger.addHandler(handler)
+logger.setLevel('DEBUG')
 
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -44,6 +51,7 @@ def draw_pair(i, label, frame1, frame2):
 
 
 def get_feature_extractor():
+    logger.info('Downloading resnet18 weights...')
     resnet_backbone = resnet18(pretrained=True)
     model = SiameseNet(backbone=resnet_backbone)
     return model
@@ -67,7 +75,7 @@ def train():
     model = get_feature_extractor()
     distances = []
     for i, data in enumerate(dataset):
-        print(i)
+        logger.info(f'Preprocessing image {i}...')
 
         data = torch.tensor(data)
         t1 = preprocess(data[0])
@@ -79,7 +87,12 @@ def train():
     [X_train, X_test, y_train, y_test] = train_test_split(np.array(distances).reshape(-1, 1), labels)
 
     clf = svm.SVC()
+    logger.info('Training...')
     clf.fit(X_train, y_train)
 
     pred = clf.predict(X_test)
-    print(accuracy_score(y_test, pred))
+    logger.info(f'Validation accuracy is {accuracy_score(y_test, pred)}')
+
+
+def predict():
+    ...
