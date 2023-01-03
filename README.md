@@ -14,7 +14,7 @@ The paths in which user data is located can be modified in the ```config.py``` f
 ## Architecture
 
 The app uses a siamese network based on resnet-18, pretrained on imagenet, to extract features
-from pairs of consecutive frames. The difference between the two feature maps computed
-by the network are classified using an SVM.
+from pairs of consecutive frames. The difference between the two feature maps produced
+by the network is classified using an SVM.
 
 ![Architecture diagram](https://github.com/dragos-gaspar/TemporalSegmentation/blob/master/images/architecture.png?raw=true)
