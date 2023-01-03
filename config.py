@@ -5,4 +5,4 @@ class DataConfig:
 
 
 class ModelConfig:
-    ...
+    DATA_PATH = '../dataset/'
